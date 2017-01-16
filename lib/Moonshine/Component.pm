@@ -22,10 +22,10 @@ BEGIN {
 
     %HAS = (
         html_spec     => sub { \%html_spec },
-        modifier_spec => sub { },
+        modifier_spec => sub { { } },
     );
 
-    my @lazy_components = qw/li a th td tr p div span b i u dl dd dt h1 h2 h3 h4 h5 h6 ol label form small mark del s ins em strong address blockquote footer cite code kbd pre var samp/;
+    my @lazy_components = qw/ul li a th td tr p div span b i u dl dd dt h1 h2 h3 h4 h5 h6 ol label form small mark del s ins em strong address blockquote footer cite code kbd pre var samp/;
     
     for my $component (@lazy_components) {
         {
