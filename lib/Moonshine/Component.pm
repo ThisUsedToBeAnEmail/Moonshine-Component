@@ -134,7 +134,7 @@ sub validate_build {
         }
     }
     
-    if (keys %modifier and $self->can('modify')) {
+    if (scalar keys %modifier and $self->can('modify')) {
         return $self->modify(\%base, \%build, \%modifier);
     }
 

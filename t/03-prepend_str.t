@@ -5,7 +5,8 @@ use Data::Dumper;
 my $instance = Moonshine::Component->new( {} );
 
 moon_one_test(
-    meth      => \&Moonshine::Component::prepend_str,
+    instance  => $instance,
+    action    => 'prepend_str',
     args      => [ 'okay', 'first' ],
     args_list => 1,
     expected  => 'first okay',
@@ -13,18 +14,20 @@ moon_one_test(
 );
 
 moon_one_test(
-    meth      => \&Moonshine::Component::prepend_str,
-    args      => [ 'okay', 'second' ],
+    instance  => $instance,
+    action    => 'prepend_str',
+    args      => [ 'okay' ],
     args_list => 1,
-    expected  => 'second okay',
+    expected  => 'okay',
     test      => 'SCALAR',
 );
 
 moon_one_test(
-    meth      => \&Moonshine::Component::prepend_str,
-    args      => [ 'okay', 'third' ],
+    instance  => $instance,
+    action    => 'prepend_str',
+    args      => [ ],
     args_list => 1,
-    expected  => 'third okay',
+    expected  => undef,
     test      => 'SCALAR',
 );
 
