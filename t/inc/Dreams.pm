@@ -6,7 +6,7 @@ use strict;
 use Test::More;
 use Params::Validate qw/:all/;
 use B qw/svref_2object/;
-
+use Scalar::Util qw/blessed/;
 use base 'Test::Builder::Module';
 use Exporter 'import';
 
@@ -146,54 +146,47 @@ sub moon_one_test {
         }
     );
 
-    my $action   = $instruction{action};
-    my $class    = $instruction{class};
-    my $meth     = $instruction{meth};
-    my $expected = $instruction{expected};
-
-    $action && $class || $meth 
-      or diag explain \%instruction;
+    my @expected = $instruction{expected};
 
     my @test;
     my $test_name;
 
-    if ($action) {
-        $test_name = $action;
-        @test =
-          defined $instruction{args}
-          ? $class->$action( $instruction{args} )
-          : $class->$action;
+    if ($instruction{test} eq 'CATCH') {
+        eval { _prepare_test(%instruction) };
+        @test = $@;
     }
-    elsif ($meth) {
-        my $cv = svref_2object($meth);
-        my $gv = $cv->GV;
-        $test_name = $gv->NAME;
-        @test =
-          defined $instruction{args_list}
-          ? $meth->( @{ $instruction{args} } )
-          : $meth->( $instruction{args} );
+    else {
+        @test = _prepare_test(%instruction);
+        $test_name = shift @test;
     }
 
     given ( $instruction{test} ) {
         when (/REF/) {
-            return is_deeply( $test[0], $expected, "$test_name IS DEEP" );
+            return is_deeply( $test[0], $expected[0], "$test_name IS DEEP" );
         }
         when (/SCALAR/) {
-            my $txt = $expected // 'undef';
-            return $tb->is_eq( $test[0], $expected,
+            my $txt = $expected[0] // 'undef';
+            return $tb->is_eq( $test[0], $expected[0],
                 "$test_name IS SCALAR - $txt" );
         }
         when (/HASH/) {
-            return is_deeply( {@test}, $expected, "$test_name IS DEEP" );
+            return is_deeply( {@test}, {@expected}, "$test_name IS DEEP" );
         }
         when (/ARRAY/) {
-            return is_deeply( \@test, $expected, "$test_name IS DEEP" )
+            return is_deeply( \@test, \@expected, "$test_name IS DEEP" )
         }
         when (/OBJ/) {
             return $tb->is_eq(
+                blessed $test[0][0],
+                $expected[0],
+                "$test_name returns Blessed - $expected[0]"
+            );
+        }
+        when (/CATCH/) {
+            return $tb->like(
                 $test[0],
-                blessed $expected,
-                "$test_name returns Blessed - $expected"
+                $expected[0],
+                "catches something like - $expected[0]",
             );
         }
         default {
@@ -201,4 +194,29 @@ sub moon_one_test {
         }
     }
 }
+
+sub _prepare_test {
+    my %instruction = @_;
+
+    my $test_name;
+    if (my $action = $instruction{action}) {
+        $test_name = $action;
+        return defined $instruction{args_list}
+          ? ($test_name, $instruction{instance}->$action(@{ $instruction{args} }))
+          : ($test_name, $instruction{instance}->$action( $instruction{args} ));
+    }
+    elsif(my $meth = $instruction{meth}) {
+        my $cv = svref_2object($meth);
+        my $gv = $cv->GV;
+        my $test_name = $gv->NAME;
+        return defined $instruction{args_list}
+          ? ($test_name, $meth->( @{ $instruction{args} } ))
+          : ($test_name, $meth->( $instruction{args} ));
+    }
+    else {
+        diag explain %instruction;
+        die;
+    }
+}
+
 
