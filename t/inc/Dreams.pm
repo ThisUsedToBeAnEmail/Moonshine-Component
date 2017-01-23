@@ -121,14 +121,20 @@ sub render_me {
         params => \@_,
         spec   => {
             instance => 1,
-            action   => 1,
+            action   => 0,
             args     => { default => {} },
             expected => { type => SCALAR },
         }
     );
 
-    my $action = $args{action};
-    return $tb->is_eq( $args{instance}->$action( $args{args} )->render,
+    my $instance;
+    if (my $action = $args{action}) {
+        $instance = $args{instance}->$action( $args{args} );   
+    } else {
+        $instance = $args{instance};
+    }
+
+    return $tb->is_eq( $instance->render,
         $args{expected}, "rendered - $args{expected}" );
 }
 
@@ -187,6 +193,12 @@ sub moon_one_test {
                 $test[0],
                 $expected[0],
                 "catches something like - $expected[0]",
+            );
+        }
+        when (/RENDER/) {
+            return render_me(
+                instance => $test[0][0],
+                expected => $expected[0],
             );
         }
         default {

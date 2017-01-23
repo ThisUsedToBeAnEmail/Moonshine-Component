@@ -134,7 +134,7 @@ sub validate_build {
         }
     }
     
-    if ($self->can('modify')) {
+    if (keys %modifier and $self->can('modify')) {
         return $self->modify(\%base, \%build, \%modifier);
     }
 
@@ -153,7 +153,7 @@ sub build_elements {
         }
         elsif ( my $action = delete $build->{action} ) {
             $self->can($action) and $element = $self->$action($build)
-              or die "cannot ......";
+              or die "cannot find action - $action";
         }
         elsif ( defined $build->{tag} ) {
             $element = Moonshine::Element->new($build);
@@ -171,15 +171,18 @@ sub build_elements {
 }
 
 sub join_class {
+    my $self = shift;
     defined $_[0] && defined $_[1] and return sprintf '%s%s', $_[0], $_[1];
     return undef;
 }
 
 sub prepend_str {
+    my $self = shift;
     return defined $_[1] ? sprintf '%s %s', $_[1], $_[0] : $_[0];
 }
 
 sub append_str {
+    my $self = shift;
     return defined $_[1] ? sprintf '%s %s', $_[0], $_[1] : $_[0];
 }
             
