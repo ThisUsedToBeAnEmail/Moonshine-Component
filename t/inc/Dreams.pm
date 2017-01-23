@@ -7,14 +7,13 @@ use Test::More;
 use Params::Validate qw/:all/;
 
 use base 'Test::Builder::Module';
-
 use Exporter 'import';
 
 use feature qw/switch/;
 no if $] >= 5.017011, warnings => 'experimental::smartmatch';
 use Scalar::Util qw/reftype blessed/;
 
-our @EXPORT = qw/ moon_test render_me done_testing /;
+our @EXPORT = qw/ moon_test render_me done_testing/;
 
 our %EXPORT_TAGS = ( all => [qw/moon_test render_me done_testing/] );
 
