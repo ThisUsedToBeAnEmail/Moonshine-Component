@@ -32,8 +32,8 @@ BEGIN {
     sup time u var wbr area audio img map track video embed object param source 
     canvas noscript script del ins caption col colgroup table tbody td tfoot th 
     thead tr button datalist fieldset form input label legend meter optgroup option 
-    output progress select textarea details dialog menu menuitem summary content 
-    element shadow template acronym applet basefont big blink center command content 
+    output progress select textarea details dialog menu menuitem summary element 
+    shadow template acronym applet basefont big blink center command content 
     dir font frame frameset isindex keygen listing marquee multicol nextid noembed 
     plaintext spacer strike tt xmp/;
 
@@ -176,11 +176,11 @@ sub join_class {
 }
 
 sub prepend_str {
-    return defined $_[1] ? sprintf '%s %s', $_[0], $_[1] : $_[0];
+    return defined $_[1] ? sprintf '%s %s', $_[1], $_[0] : $_[0];
 }
 
 sub append_str {
-    return defined $_[1] ? sprintf '%s %s', $_[1], $_[0] : $_[0];
+    return defined $_[1] ? sprintf '%s %s', $_[0], $_[1] : $_[0];
 }
             
 1;

@@ -5,6 +5,7 @@ use strict;
 
 use Test::More;
 use Params::Validate qw/:all/;
+use B qw/svref_2object/;
 
 use base 'Test::Builder::Module';
 use Exporter 'import';
@@ -13,9 +14,10 @@ use feature qw/switch/;
 no if $] >= 5.017011, warnings => 'experimental::smartmatch';
 use Scalar::Util qw/reftype blessed/;
 
-our @EXPORT = qw/ moon_test render_me done_testing/;
+our @EXPORT = qw/ moon_test render_me moon_one_test done_testing/;
 
-our %EXPORT_TAGS = ( all => [qw/moon_test render_me done_testing/] );
+our %EXPORT_TAGS =
+  ( all => [qw/moon_test render_me moon_one_test done_testing/] );
 
 my $tb = __PACKAGE__->builder;
 
@@ -50,48 +52,53 @@ sub moon_test {
     my $args = shift;
 
     my $instructions = $args->{instructions};
-    
+
     my $class;
     unless ( $class = $args->{class} ) {
         my $build = $args->{build};
-        $class = $build->{class}->new($build->{args} // {});
+        $class = $build->{class}->new( $build->{args} // {} );
     }
 
-    for my $instruction (@{ $instructions }) {
+    for my $instruction ( @{$instructions} ) {
 
-        my $action = $instruction->{action};
+        my $action   = $instruction->{action};
         my $expected = $instruction->{expected};
 
-        $action && $expected or diag explain $instruction and
-            die 'I just burnt a hole in my home computer';
+        $action && $expected
+          or diag explain $instruction
+          and die 'I just burnt a hole in my home computer';
 
-        my $test = defined $instruction->{args} 
-            ? $class->$action($instruction->{args}) 
-            : $class->$action;
-        
-        if (my $blessed = blessed $test) {
-            $tb->is_eq($blessed, $expected, "$action returns Blessed - $expected");
-            
-            if (my $subtests = $instruction->{sub_tests}){
+        my $test =
+          defined $instruction->{args}
+          ? $class->$action( $instruction->{args} )
+          : $class->$action;
+
+        if ( my $blessed = blessed $test) {
+            $tb->is_eq( $blessed, $expected,
+                "$action returns Blessed - $expected" );
+
+            if ( my $subtests = $instruction->{sub_tests} ) {
                 diag 'Build new args for sub_tests';
                 my $new_args = {
-                    class => $test,
+                    class        => $test,
                     instructions => $subtests,
                 };
                 moon_test($new_args);
                 diag 'Return to reality';
             }
-        } else {
-           given ( reftype \$test ) {
+        }
+        else {
+            given ( reftype \$test ) {
                 when (/REF/) {
-                    $tb->is_deeply($test, $expected, "$action IS DEEPLY - ");
+                    $tb->is_deeply( $test, $expected, "$action IS DEEPLY - " );
                     diag explain $test;
                 }
                 when (/SCALAR/) {
-                    $tb->is_eq($test, $expected, "$action IS SCALAR - $expected" );
+                    $tb->is_eq( $test, $expected,
+                        "$action IS SCALAR - $expected" );
                 }
                 default {
-                  die diag explain $test;
+                    die diag explain $test;
                 }
             }
         }
@@ -113,15 +120,86 @@ sub moon_test {
 sub render_me {
     my %args = validate_with(
         params => \@_,
-        spec => {
+        spec   => {
             instance => 1,
-            action => 1,
-            args => { default => { } },
+            action   => 1,
+            args     => { default => {} },
             expected => { type => SCALAR },
         }
     );
 
     my $action = $args{action};
-    return $tb->is_eq($args{instance}->$action($args{args})->render, $args{expected}, "rendered - $args{expected}");
+    return $tb->is_eq( $args{instance}->$action( $args{args} )->render,
+        $args{expected}, "rendered - $args{expected}" );
+}
+
+sub moon_one_test {
+    my %instruction = validate_with(
+        params => \@_,
+        spec   => {
+            instance  => 0,
+            meth      => 0,
+            action    => 0,
+            args      => { default => {} },
+            args_list => 0,
+            test      => 1,
+            expected  => 1,
+        }
+    );
+
+    my $action   = $instruction{action};
+    my $class    = $instruction{class};
+    my $meth     = $instruction{meth};
+    my $expected = $instruction{expected};
+
+    $action && $class || $meth && $expected
+      or diag explain \%instruction
+      and die 'I just burnt a hole in my home computer';
+
+    my @test;
+    my $test_name;
+
+    if ($action) {
+        $test_name = $action;
+        @test =
+          defined $instruction{args}
+          ? $class->$action( $instruction{args} )
+          : $class->$action;
+    }
+    elsif ($meth) {
+        my $cv = svref_2object($meth);
+        my $gv = $cv->GV;
+        $test_name = $gv->NAME;
+        @test =
+          defined $instruction{args_list}
+          ? $meth->( @{ $instruction{args} } )
+          : $meth->( $instruction{args} );
+    }
+
+    given ( $instruction{test} ) {
+        when (/REF/) {
+            return is_deeply( $test[0], $expected, "$test_name IS DEEP" );
+        }
+        when (/SCALAR/) {
+            return $tb->is_eq( $test[0], $expected,
+                "$test_name IS SCALAR - $expected" );
+        }
+        when (/HASH/) {
+            return is_deeply( {@test}, $expected, "$test_name IS DEEP" );
+        }
+        when (/ARRAY/) {
+            return is_deeply( \@test, $expected, "$test_name IS DEEP" )
+        }
+        when (/OBJ/) {
+            return $tb->is_eq(
+                $test[0],
+                blessed $expected,
+                "$test_name returns Blessed - $expected"
+            );
+        }
+        default {
+            die diag explain \@test;
+        }
+    }
 }
 
