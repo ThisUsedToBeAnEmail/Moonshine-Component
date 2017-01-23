@@ -41,7 +41,7 @@ BEGIN {
     for my $component (@lazy_components) {
         {
             no strict 'refs';
-            *{"$component"} = sub {
+            *{"${component}"} = sub {
                 my $self = shift;
 
                 my ( $base_args, $build_args ) = $self->validate_build(
