@@ -65,8 +65,7 @@ sub moon_test {
         my $expected = $instruction->{expected};
 
         $action && $expected
-          or diag explain $instruction
-          and die 'I just burnt a hole in my home computer';
+          or diag explain $instruction;
 
         my $test =
           defined $instruction->{args}
@@ -152,9 +151,8 @@ sub moon_one_test {
     my $meth     = $instruction{meth};
     my $expected = $instruction{expected};
 
-    $action && $class || $meth && $expected
-      or diag explain \%instruction
-      and die 'I just burnt a hole in my home computer';
+    $action && $class || $meth 
+      or diag explain \%instruction;
 
     my @test;
     my $test_name;
@@ -181,8 +179,9 @@ sub moon_one_test {
             return is_deeply( $test[0], $expected, "$test_name IS DEEP" );
         }
         when (/SCALAR/) {
+            my $txt = $expected // 'undef';
             return $tb->is_eq( $test[0], $expected,
-                "$test_name IS SCALAR - $expected" );
+                "$test_name IS SCALAR - $txt" );
         }
         when (/HASH/) {
             return is_deeply( {@test}, $expected, "$test_name IS DEEP" );
