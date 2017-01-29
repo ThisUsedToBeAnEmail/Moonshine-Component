@@ -1,907 +1,810 @@
-# NAME
-
-Moonshine::Component - HTML Component base.
-
-# VERSION
-
-Version 0.01
-
-# SYNOPSIS
-
-    package Moonshine::Component::Glyphicon;
-
-    use Moonshine::Util qw/join_class prepend_str/;
-
-    our @ISA; { @ISA = 'Moonshine::Component' };
-
-    BEGIN { 
-        my %modifer_spec = map { $_ => 0 } qw/switch switch_base/;
-        %HAS = (
-            %Moonshine::Component::HAS,
-            modifier_spec => sub { \%modifer_spec }
-        );
-    }
-
-    sub modify {
-        my $self = shift;
-        my ($base_args, $build_args, $modify_args) = @_;
-        if (my $class = join_class($modify_args->{switch_base}, $modify_args->{switch})){
-            $base_args->{class} = prepend_str($class, $base_args->{class});
-        }
-        return $base_args, $build_args, $modify_args;
-    }
-
-    sub glyphicon {
-        my $self = shift;
-        my ( $base_args, $build_args ) = $self->validate_build(
-            {
-                params => $_[0] // {},
-                spec => {
-                    switch      => 1,
-                    switch_base => { default => 'glyphicon glyphicon-' },
-                    aria_hidden => { default => 'true' },
-                }
-            }
-        );
-        return $self->span($base_args);
-    }
-
-# BASE Components
-
-## html 
+=head2 html 
 
     $self->html()
 
     <html></html>
 
-## base 
+=head2 base 
 
     $self->base()
 
     <base></base>
 
-## head 
+=head2 head 
 
     $self->head()
 
     <head></head>
 
-## link 
+=head2 link 
 
     $self->link()
 
     <link></link>
 
-## meta 
+=head2 meta 
 
     $self->meta()
 
     <meta></meta>
 
-## style 
+=head2 style 
 
     $self->style()
 
     <style></style>
 
-## title 
+=head2 title 
 
     $self->title()
 
     <title></title>
 
-## address 
+=head2 address 
 
     $self->address()
 
     <address></address>
 
-## article 
+=head2 article 
 
     $self->article()
 
     <article></article>
 
-## aside 
+=head2 aside 
 
     $self->aside()
 
     <aside></aside>
 
-## footer 
+=head2 footer 
 
     $self->footer()
 
     <footer></footer>
 
-## header 
+=head2 header 
 
     $self->header()
 
     <header></header>
 
-## h1 
+=head2 h1 
 
     $self->h1()
 
     <h1></h1>
 
-## h2 
+=head2 h2 
 
     $self->h2()
 
     <h2></h2>
 
-## h3 
+=head2 h3 
 
     $self->h3()
 
     <h3></h3>
 
-## h4 
+=head2 h4 
 
     $self->h4()
 
     <h4></h4>
 
-## h5 
+=head2 h5 
 
     $self->h5()
 
     <h5></h5>
 
-## h6 
+=head2 h6 
 
     $self->h6()
 
     <h6></h6>
 
-## hgroup 
+=head2 hgroup 
 
     $self->hgroup()
 
     <hgroup></hgroup>
 
-## nav 
+=head2 nav 
 
     $self->nav()
 
     <nav></nav>
 
-## section 
+=head2 section 
 
     $self->section()
 
     <section></section>
 
-## dd 
+=head2 dd 
 
     $self->dd()
 
     <dd></dd>
 
-## div 
+=head2 div 
 
     $self->div()
 
     <div></div>
 
-## dl 
+=head2 dl 
 
     $self->dl()
 
     <dl></dl>
 
-## dt 
+=head2 dt 
 
     $self->dt()
 
     <dt></dt>
 
-## figcaption 
+=head2 figcaption 
 
     $self->figcaption()
 
     <figcaption></figcaption>
 
-## figure 
+=head2 figure 
 
     $self->figure()
 
     <figure></figure>
 
-## hr 
+=head2 hr 
 
     $self->hr()
 
     <hr></hr>
 
-## li 
+=head2 li 
 
     $self->li()
 
     <li></li>
 
-## main 
+=head2 main 
 
     $self->main()
 
     <main></main>
 
-## ol 
+=head2 ol 
 
     $self->ol()
 
     <ol></ol>
 
-## p 
+=head2 p 
 
     $self->p()
 
     <p></p>
 
-## pre 
+=head2 pre 
 
     $self->pre()
 
     <pre></pre>
 
-## ul 
+=head2 ul 
 
     $self->ul()
 
     <ul></ul>
 
-## a 
+=head2 a 
 
     $self->a()
 
     <a></a>
 
-## abbr 
+=head2 abbr 
 
     $self->abbr()
 
     <abbr></abbr>
 
-## b 
+=head2 b 
 
     $self->b()
 
     <b></b>
 
-## bdi 
+=head2 bdi 
 
     $self->bdi()
 
     <bdi></bdi>
 
-## bdo 
+=head2 bdo 
 
     $self->bdo()
 
     <bdo></bdo>
 
-## br 
+=head2 br 
 
     $self->br()
 
     <br></br>
 
-## cite 
+=head2 cite 
 
     $self->cite()
 
     <cite></cite>
 
-## code 
+=head2 code 
 
     $self->code()
 
     <code></code>
 
-## data 
+=head2 data 
 
     $self->data()
 
     <data></data>
 
-## dfn 
+=head2 dfn 
 
     $self->dfn()
 
     <dfn></dfn>
 
-## em 
+=head2 em 
 
     $self->em()
 
     <em></em>
 
-## i 
+=head2 i 
 
     $self->i()
 
     <i></i>
 
-## kbd 
+=head2 kbd 
 
     $self->kbd()
 
     <kbd></kbd>
 
-## mark 
+=head2 mark 
 
     $self->mark()
 
     <mark></mark>
 
-## q 
+=head2 q 
 
     $self->q()
 
     <q></q>
 
-## rp 
+=head2 rp 
 
     $self->rp()
 
     <rp></rp>
 
-## rt 
+=head2 rt 
 
     $self->rt()
 
     <rt></rt>
 
-## rtc 
+=head2 rtc 
 
     $self->rtc()
 
     <rtc></rtc>
 
-## ruby 
+=head2 ruby 
 
     $self->ruby()
 
     <ruby></ruby>
 
-## s 
+=head2 s 
 
     $self->s()
 
     <s></s>
 
-## samp 
+=head2 samp 
 
     $self->samp()
 
     <samp></samp>
 
-## small 
+=head2 small 
 
     $self->small()
 
     <small></small>
 
-## span 
+=head2 span 
 
     $self->span()
 
     <span></span>
 
-## strong 
+=head2 strong 
 
     $self->strong()
 
     <strong></strong>
 
-## sub 
+=head2 sub 
 
     $self->sub()
 
     <sub></sub>
 
-## sup 
+=head2 sup 
 
     $self->sup()
 
     <sup></sup>
 
-## time 
+=head2 time 
 
     $self->time()
 
     <time></time>
 
-## u 
+=head2 u 
 
     $self->u()
 
     <u></u>
 
-## var 
+=head2 var 
 
     $self->var()
 
     <var></var>
 
-## wbr 
+=head2 wbr 
 
     $self->wbr()
 
     <wbr></wbr>
 
-## area 
+=head2 area 
 
     $self->area()
 
     <area></area>
 
-## audio 
+=head2 audio 
 
     $self->audio()
 
     <audio></audio>
 
-## img 
+=head2 img 
 
     $self->img()
 
     <img></img>
 
-## map 
+=head2 map 
 
     $self->map()
 
     <map></map>
 
-## track 
+=head2 track 
 
     $self->track()
 
     <track></track>
 
-## video 
+=head2 video 
 
     $self->video()
 
     <video></video>
 
-## embed 
+=head2 embed 
 
     $self->embed()
 
     <embed></embed>
 
-## object 
+=head2 object 
 
     $self->object()
 
     <object></object>
 
-## param 
+=head2 param 
 
     $self->param()
 
     <param></param>
 
-## source 
+=head2 source 
 
     $self->source()
 
     <source></source>
 
-## canvas 
+=head2 canvas 
 
     $self->canvas()
 
     <canvas></canvas>
 
-## noscript 
+=head2 noscript 
 
     $self->noscript()
 
     <noscript></noscript>
 
-## script 
+=head2 script 
 
     $self->script()
 
     <script></script>
 
-## del 
+=head2 del 
 
     $self->del()
 
     <del></del>
 
-## ins 
+=head2 ins 
 
     $self->ins()
 
     <ins></ins>
 
-## caption 
+=head2 caption 
 
     $self->caption()
 
     <caption></caption>
 
-## col 
+=head2 col 
 
     $self->col()
 
     <col></col>
 
-## colgroup 
+=head2 colgroup 
 
     $self->colgroup()
 
     <colgroup></colgroup>
 
-## table 
+=head2 table 
 
     $self->table()
 
     <table></table>
 
-## tbody 
+=head2 tbody 
 
     $self->tbody()
 
     <tbody></tbody>
 
-## td 
+=head2 td 
 
     $self->td()
 
     <td></td>
 
-## tfoot 
+=head2 tfoot 
 
     $self->tfoot()
 
     <tfoot></tfoot>
 
-## th 
+=head2 th 
 
     $self->th()
 
     <th></th>
 
-## thead 
+=head2 thead 
 
     $self->thead()
 
     <thead></thead>
 
-## tr 
+=head2 tr 
 
     $self->tr()
 
     <tr></tr>
 
-## button 
+=head2 button 
 
     $self->button()
 
     <button></button>
 
-## datalist 
+=head2 datalist 
 
     $self->datalist()
 
     <datalist></datalist>
 
-## fieldset 
+=head2 fieldset 
 
     $self->fieldset()
 
     <fieldset></fieldset>
 
-## form 
+=head2 form 
 
     $self->form()
 
     <form></form>
 
-## input 
+=head2 input 
 
     $self->input()
 
     <input></input>
 
-## label 
+=head2 label 
 
     $self->label()
 
     <label></label>
 
-## legend 
+=head2 legend 
 
     $self->legend()
 
     <legend></legend>
 
-## meter 
+=head2 meter 
 
     $self->meter()
 
     <meter></meter>
 
-## optgroup 
+=head2 optgroup 
 
     $self->optgroup()
 
     <optgroup></optgroup>
 
-## option 
+=head2 option 
 
     $self->option()
 
     <option></option>
 
-## output 
+=head2 output 
 
     $self->output()
 
     <output></output>
 
-## progress 
+=head2 progress 
 
     $self->progress()
 
     <progress></progress>
 
-## select 
+=head2 select 
 
     $self->select()
 
     <select></select>
 
-## textarea 
+=head2 textarea 
 
     $self->textarea()
 
     <textarea></textarea>
 
-## details 
+=head2 details 
 
     $self->details()
 
     <details></details>
 
-## dialog 
+=head2 dialog 
 
     $self->dialog()
 
     <dialog></dialog>
 
-## menu 
+=head2 menu 
 
     $self->menu()
 
     <menu></menu>
 
-## menuitem 
+=head2 menuitem 
 
     $self->menuitem()
 
     <menuitem></menuitem>
 
-## summary 
+=head2 summary 
 
     $self->summary()
 
     <summary></summary>
 
-## element 
+=head2 element 
 
     $self->element()
 
     <element></element>
 
-## shadow 
+=head2 shadow 
 
     $self->shadow()
 
     <shadow></shadow>
 
-## template 
+=head2 template 
 
     $self->template()
 
     <template></template>
 
-## acronym 
+=head2 acronym 
 
     $self->acronym()
 
     <acronym></acronym>
 
-## applet 
+=head2 applet 
 
     $self->applet()
 
     <applet></applet>
 
-## basefont 
+=head2 basefont 
 
     $self->basefont()
 
     <basefont></basefont>
 
-## big 
+=head2 big 
 
     $self->big()
 
     <big></big>
 
-## blink 
+=head2 blink 
 
     $self->blink()
 
     <blink></blink>
 
-## center 
+=head2 center 
 
     $self->center()
 
     <center></center>
 
-## command 
+=head2 command 
 
     $self->command()
 
     <command></command>
 
-## content 
+=head2 content 
 
     $self->content()
 
     <content></content>
 
-## dir 
+=head2 dir 
 
     $self->dir()
 
     <dir></dir>
 
-## font 
+=head2 font 
 
     $self->font()
 
     <font></font>
 
-## frame 
+=head2 frame 
 
     $self->frame()
 
     <frame></frame>
 
-## frameset 
+=head2 frameset 
 
     $self->frameset()
 
     <frameset></frameset>
 
-## isindex 
+=head2 isindex 
 
     $self->isindex()
 
     <isindex></isindex>
 
-## keygen 
+=head2 keygen 
 
     $self->keygen()
 
     <keygen></keygen>
 
-## listing 
+=head2 listing 
 
     $self->listing()
 
     <listing></listing>
 
-## marquee 
+=head2 marquee 
 
     $self->marquee()
 
     <marquee></marquee>
 
-## multicol 
+=head2 multicol 
 
     $self->multicol()
 
     <multicol></multicol>
 
-## nextid 
+=head2 nextid 
 
     $self->nextid()
 
     <nextid></nextid>
 
-## noembed 
+=head2 noembed 
 
     $self->noembed()
 
     <noembed></noembed>
 
-## plaintext 
+=head2 plaintext 
 
     $self->plaintext()
 
     <plaintext></plaintext>
 
-## spacer 
+=head2 spacer 
 
     $self->spacer()
 
     <spacer></spacer>
 
-## strike 
+=head2 strike 
 
     $self->strike()
 
     <strike></strike>
 
-## tt 
+=head2 tt 
 
     $self->tt()
 
     <tt></tt>
 
-## xmp 
+=head2 xmp 
 
     $self->xmp()
 
     <xmp></xmp>
 
-# AUTHOR
-
-LNATION, `<thisusedtobeanemail at gmail.com>`
-
-# BUGS
-
-# ACKNOWLEDGEMENTS
-
-# LICENSE AND COPYRIGHT
-
-Copyright 2017 LNATION.
-
-This program is free software; you can redistribute it and/or modify it
-under the terms of the the Artistic License (2.0). You may obtain a
-copy of the full license at:
-
-[http://www.perlfoundation.org/artistic\_license\_2\_0](http://www.perlfoundation.org/artistic_license_2_0)
-
-Any use, modification, and distribution of the Standard or Modified
-Versions is governed by this Artistic License. By using, modifying or
-distributing the Package, you accept this license. Do not use, modify,
-or distribute the Package, if you do not accept this license.
-
-If your Modified Version has been derived from a Modified Version made
-by someone other than you, you are nevertheless required to ensure that
-your Modified Version complies with the requirements of this license.
-
-This license does not grant you the right to use any trademark, service
-mark, tradename, or logo of the Copyright Holder.
-
-This license includes the non-exclusive, worldwide, free-of-charge
-patent license to make, have made, use, offer to sell, sell, import and
-otherwise transfer the Package with respect to any patent claims
-licensable by the Copyright Holder that are necessarily infringed by the
-Package. If you institute patent litigation (including a cross-claim or
-counterclaim) against any party alleging that the Package constitutes
-direct or contributory patent infringement, then this Artistic License
-to you shall terminate on the date that such litigation is filed.
-
-Disclaimer of Warranty: THE PACKAGE IS PROVIDED BY THE COPYRIGHT HOLDER
-AND CONTRIBUTORS "AS IS' AND WITHOUT ANY EXPRESS OR IMPLIED WARRANTIES.
-THE IMPLIED WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR
-PURPOSE, OR NON-INFRINGEMENT ARE DISCLAIMED TO THE EXTENT PERMITTED BY
-YOUR LOCAL LAW. UNLESS REQUIRED BY LAW, NO COPYRIGHT HOLDER OR
-CONTRIBUTOR WILL BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, OR
-CONSEQUENTIAL DAMAGES ARISING IN ANY WAY OUT OF THE USE OF THE PACKAGE,
-EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
