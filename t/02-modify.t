@@ -1,10 +1,13 @@
-use Dreams qw/:all/;
+use Moonshine::Test qw/:all/;
 
 use Moonshine::Component;
-use Data::Dumper;
+use Moonshine::Element;
+
 my $instance = Moonshine::Component->new( {} );
 
 package Test::First;
+
+use Moonshine::Util qw/join_class prepend_str/;
 
 our @ISA; { @ISA = 'Moonshine::Component' };
 
@@ -19,9 +22,8 @@ BEGIN {
 sub modify {
     my $self = shift;
     my ($base_args, $build_args, $modify_args) = @_;
-    if ($modify_args->{switch}) {
-        my $class = sprintf '%s', $self->join_class($modify_args->{switch_base}, $modify_args->{switch});
-        $base_args->{class} = $self->prepend_str($class, $base_args->{class});
+    if (my $class = join_class($modify_args->{switch_base}, $modify_args->{switch})){
+        $base_args->{class} = prepend_str($class, $base_args->{class});
     }
     return $base_args, $build_args, $modify_args;
 }
@@ -43,9 +45,9 @@ sub glyphicon {
 
 package main;
 
-moon_one_test(
+moon_test_one(
     instance  => $instance,
-    action => 'build_elements',
+    func => 'build_elements',
     args      => [  
         {
             class => 'not an obj, nor am action. or a tag'
@@ -53,42 +55,41 @@ moon_one_test(
     ],
     args_list => 1,
     expected  => qr/no instructions to build the element:/,
-    test      => 'CATCH',
+    catch     => 1,
 );
 
-moon_one_test(
+my $args = { tag => 'div', class => 'one two three' };
+
+moon_test_one(
     instance  => $instance,
-    action => 'build_elements',
+    func => 'build_elements',
     args      => [  
-        {
-            tag => 'div',
-            class => 'not an obj, nor am action. or a tag'
-        },
+        $args,
     ],
     args_list => 1,
     expected  => 'Moonshine::Element',
-    test      => 'OBJ',
+    test      => 'obj',
 );
 
-moon_one_test(
+moon_test_one(
     instance  => $instance,
-    action => 'build_elements',
+    func => 'build_elements',
     args      => [  
         {
-            action => 'nope',
+            func => 'nope',
             class => 'not an obj, nor am action. or a tag'
         },
     ],
     args_list => 1,
-    expected  => qr/cannot find action - nope/,
-    test      => 'CATCH',
+    expected  => qr/no instructions to build the element: func: nope, class: not an obj, nor am action. or a tag at/,
+    catch     => 1,
 );
 
 my $test_instance = Test::First->new({});
 
-moon_one_test(
+moon_test_one(
     instance  => $test_instance,
-    action => 'build_elements',
+    func => 'build_elements',
     args      => [  
         {
             action => 'glyphicon',
@@ -97,22 +98,22 @@ moon_one_test(
     ],
     args_list => 1,
     expected  => '<span class="glyphicon glyphicon-search" aria-hidden="true"></span>',
-    test      => 'RENDER',
+    test      => 'render',
 );
 
 my $test_element = Moonshine::Element->new({ tag => 'span', class => 'glyphicon glyphicon-search', aria_hidden => 'true' });
 
-moon_one_test(
+moon_test_one(
     instance  => $instance,
-    action => 'build_elements',
+    func => 'build_elements',
     args      => [  
         $test_element
     ],
     args_list => 1,
     expected  => '<span class="glyphicon glyphicon-search" aria-hidden="true"></span>',
-    test      => 'RENDER',
+    test      => 'render',
 );
 
-done_testing();
+sunrise();
 
 1;

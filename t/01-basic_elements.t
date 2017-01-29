@@ -1,5 +1,4 @@
-
-use Dreams qw/:all/;
+use Moonshine::Test qw/:element/;
 
 use Moonshine::Component;
 use Data::Dumper;
@@ -23,15 +22,15 @@ for my $element (@lazy_testing) {
     my $expected = sprintf '<%s></%s>', $element, $element;
     render_me(
         instance => $instance,
-        action => $element,
+        func     => $element,
         expected => $expected,
     );
     my $class = 'class="blue"';
     $expected =~ s/($element)/$1 $class/;
     render_me(
         instance => $instance,
-        action => $element,
-        args => {
+        func     => $element,
+        args     => {
             class => 'blue',
         },
         expected => $expected,
@@ -42,8 +41,8 @@ for my $element (@lazy_testing) {
     $expected =~ s/($class)/$1 $idd/;
     render_me(
         instance => $instance,
-        action => $element,
-        args => {
+        func     => $element,
+        args     => {
             class => 'blue',
             id => $id,
         },
@@ -51,6 +50,6 @@ for my $element (@lazy_testing) {
     );
 }
 
-done_testing();
+sunrise();
 
 1;

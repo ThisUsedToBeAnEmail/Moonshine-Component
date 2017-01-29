@@ -11,10 +11,25 @@ use Ref::Util qw(:all);
 use feature qw/switch/;
 no if $] >= 5.017011, warnings => 'experimental::smartmatch';
 
-our $VERSION = '0.01';
-
 our @ISA; { @ISA = "UNIVERSAL::Object" };
 our %HAS;
+
+=head1 NAME
+
+Moonshine::Component - HTML Component base.
+
+=head1 VERSION
+
+Version 0.01
+
+=cut
+
+our $VERSION = '0.01';
+
+=head1 SYNOPSIS
+
+
+=cut
 
 BEGIN {
     my $fields = $Moonshine::Element::HAS{"attribute_list"}->();
@@ -129,8 +144,8 @@ sub validate_build {
 
     for my $element (qw/before_element after_element children/) {
         if ( defined $modifier{$element} ) {
-            my $elements = $self->build_elements( @{ $modifier{$element} } );
-            $base{$element} = $elements;
+            my @elements = $self->build_elements( @{ $modifier{$element} } );
+            $base{$element} = \@elements;
         }
     }
     
@@ -167,23 +182,7 @@ sub build_elements {
         push @elements, $element;
     }
 
-    return \@elements;
-}
-
-sub join_class {
-    my $self = shift;
-    defined $_[0] && defined $_[1] and return sprintf '%s%s', $_[0], $_[1];
-    return undef;
-}
-
-sub prepend_str {
-    my $self = shift;
-    return defined $_[1] ? sprintf '%s %s', $_[1], $_[0] : $_[0];
-}
-
-sub append_str {
-    my $self = shift;
-    return defined $_[1] ? sprintf '%s %s', $_[0], $_[1] : $_[0];
+    return @elements;
 }
             
 1;
