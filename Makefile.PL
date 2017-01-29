@@ -43,5 +43,5 @@ WriteMakefile(
     },
     META_ADD => {
         provides => Module::Metadata->provides(version => '2', dir => 'lib'),
-}, 
+    }, 
 );
