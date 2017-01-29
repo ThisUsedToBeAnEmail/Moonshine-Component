@@ -28,6 +28,43 @@ our $VERSION = '0.01';
 
 =head1 SYNOPSIS
 
+    package Moonshine::Component::Glyphicon;
+
+    use Moonshine::Util qw/join_class prepend_str/;
+
+    our @ISA; { @ISA = 'Moonshine::Component' };
+
+    BEGIN { 
+        my %modifer_spec = map { $_ => 0 } qw/switch switch_base/;
+        %HAS = (
+            %Moonshine::Component::HAS,
+            modifier_spec => sub { \%modifer_spec }
+        );
+    }
+
+    sub modify {
+        my $self = shift;
+        my ($base_args, $build_args, $modify_args) = @_;
+        if (my $class = join_class($modify_args->{switch_base}, $modify_args->{switch})){
+            $base_args->{class} = prepend_str($class, $base_args->{class});
+        }
+        return $base_args, $build_args, $modify_args;
+    }
+
+    sub glyphicon {
+        my $self = shift;
+        my ( $base_args, $build_args ) = $self->validate_build(
+            {
+                params => $_[0] // {},
+                spec => {
+                    switch      => 1,
+                    switch_base => { default => 'glyphicon glyphicon-' },
+                    aria_hidden => { default => 'true' },
+                }
+            }
+        );
+        return $self->span($base_args);
+    }
 
 =cut
 
