@@ -3,3 +3,5 @@ Revision history for Moonshine-Component
 0.01    Date/time
         First version, released on an unsuspecting world.
 
+0.02    30/01/2017
+        Adds Moonshine::Util to build_requires - Hopefully that fixes all the failing tests.
