@@ -81,7 +81,7 @@ moon_test_one(
         },
     ],
     args_list => 1,
-    expected  => qr/no instructions to build the element: func: nope, class: not an obj, nor am action. or a tag at/,
+    expected  => 'no instructions to build the element: class: not an obj, nor am action. or a tag',
     catch     => 1,
 );
 

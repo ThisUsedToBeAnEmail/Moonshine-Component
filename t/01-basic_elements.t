@@ -1,7 +1,6 @@
 use Moonshine::Test qw/:element/;
 
 use Moonshine::Component;
-use Data::Dumper;
 my $instance = Moonshine::Component->new({ });
 
 my @lazy_testing = qw/html base head link meta style title address 

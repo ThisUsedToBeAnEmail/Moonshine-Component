@@ -17,7 +17,8 @@ WriteMakefile(
     },
     BUILD_REQUIRES => {
         'Test::More' => 0,
-        'Moonshine::Test' => 0,
+        'Moonshine::Test' => 0.5,
+        'Moonshine::Util' => 0.2,
         'Moonshine::Element' => 0,
     },
     PREREQ_PM => {
