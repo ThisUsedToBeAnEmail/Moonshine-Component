@@ -5,14 +5,14 @@ use strict;
 use warnings;
 
 use Moonshine::Element;
+use Moonshine::Magic;
 use Params::Validate qw(:all);
 use Ref::Util qw(:all);
-
+use BEGIN::Lift;
 use feature qw/switch/;
 no if $] >= 5.017011, warnings => 'experimental::smartmatch';
 
-our @ISA; { @ISA = "UNIVERSAL::Object" };
-our %HAS;
+extends "UNIVERSAL::Object";
 
 our $VERSION = '0.02';
 
@@ -20,44 +20,10 @@ BEGIN {
     my $fields = $Moonshine::Element::HAS{"attribute_list"}->();
     my %html_spec = map { $_ => 0 } @{$fields}, qw/data tag/;
 
-    %HAS = (
+    has (
         html_spec     => sub { \%html_spec },
         modifier_spec => sub { { } },
     );
-
-    my @lazy_components = qw/html base head link meta style title address 
-    article aside footer header h1 h2 h3 h4 h5 h6 hgroup nav section dd div 
-    dl dt figcaption figure hr li main ol p pre ul a abbr b bdi bdo br cite 
-    code data dfn em i kbd mark q rp rt rtc ruby s samp small span strong sub 
-    sup time u var wbr area audio img map track video embed object param source 
-    canvas noscript script del ins caption col colgroup table tbody td tfoot th 
-    thead tr button datalist fieldset form input label legend meter optgroup option 
-    output progress select textarea details dialog menu menuitem summary element 
-    shadow template acronym applet basefont big blink center command content 
-    dir font frame frameset isindex keygen listing marquee multicol nextid noembed 
-    plaintext spacer strike tt xmp/;
-
-    
-    for my $component (@lazy_components) {
-        {
-            no strict 'refs';
-            *{"${component}"} = sub {
-                my $self = shift;
-
-                my ( $base_args, $build_args ) = $self->validate_build(
-                    {
-                        params => $_[0] // {},
-                        spec => {
-                            tag  => { default => $component },
-                            data => 0,
-                        }
-                    }
-                );
-
-                return Moonshine::Element->new($base_args);
-              }
-        };
-    }
 }
 
 sub validate_build {
@@ -70,10 +36,10 @@ sub validate_build {
         }
     );
 
-    my %html_spec   = %{ $self->{html_spec} };
+    my %html_spec   = %{ $self->html_spec };
     my %html_params = ();
 
-    my %modifier_spec   = %{ $self->{modifier_spec} };
+    my %modifier_spec   = %{ $self->modifier_spec };
     my %modifier_params = ();
 
     my %combine = ( %{ $args{params} }, %{ $args{'spec'} } );
@@ -190,15 +156,18 @@ Version 0.02
 
     use Moonshine::Util qw/join_class prepend_str/;
 
-    our @ISA; { @ISA = 'Moonshine::Component' };
-
-    BEGIN { 
-        my %modifer_spec = map { $_ => 0 } qw/switch switch_base/;
-        %HAS = (
-            %Moonshine::Component::HAS,
-            modifier_spec => sub { \%modifer_spec }
-        );
-    }
+    extends 'Moonshine::Component';
+    
+    lazy_components (qw/span/)
+    
+    has (
+        modifier_spec => sub { 
+            {
+                switch => 0,
+                switch_base => 0,
+            }
+        }
+    );
 
     sub modify {
         my $self = shift;

@@ -7,17 +7,21 @@ my $instance = Moonshine::Component->new( {} );
 
 package Test::First;
 
+use Moonshine::Magic;
 use Moonshine::Util qw/join_class prepend_str/;
 
-our @ISA; { @ISA = 'Moonshine::Component' };
+extends 'Moonshine::Component';
 
-BEGIN { 
-    my %modifer_spec = map { $_ => 0 } qw/switch switch_base/;
-    %HAS = (
-        %Moonshine::Component::HAS,
-        modifier_spec => sub { \%modifer_spec }
-    );
-}
+has (
+    modifier_spec => sub { 
+        { 
+            switch => 0,
+            switch_base => 0,  
+        }   
+    }
+);
+
+lazy_components('span');
 
 sub modify {
     my $self = shift;
@@ -77,11 +81,11 @@ moon_test_one(
     args      => [  
         {
             func => 'nope',
-            class => 'not an obj, nor am action. or a tag'
+            class => 'not an obj, nor an action. or a tag'
         },
     ],
     args_list => 1,
-    expected  => 'no instructions to build the element: class: not an obj, nor am action. or a tag',
+    expected  => qr/no instructions to build the element/,
     catch     => 1,
 );
 
