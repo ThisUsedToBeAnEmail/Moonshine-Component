@@ -20,9 +20,11 @@ WriteMakefile(
         'Moonshine::Test' => 0.05,
         'Moonshine::Util' => 0.02,
         'Moonshine::Element' => 0,
+        'Moonshine::Magic' => 0,
     },
     PREREQ_PM => {
         'Moonshine::Element' => 0,
+        'Moonshine::Magic'   => 0,
         'Params::Validate'   => 0,
         'Ref::Util'          => 0,
         'UNIVERSAL::Object'  => 0, 
