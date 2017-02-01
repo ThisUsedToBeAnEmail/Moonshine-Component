@@ -12,7 +12,7 @@ no if $] >= 5.017011, warnings => 'experimental::smartmatch';
 
 extends "UNIVERSAL::Object";
 
-our $VERSION = '0.03';
+our $VERSION = '0.04';
 
 BEGIN {
     my $fields = $Moonshine::Element::HAS{"attribute_list"}->();
@@ -144,7 +144,7 @@ Moonshine::Component - HTML Component base.
 
 =head1 VERSION
 
-Version 0.03
+Version 0.04
 
 =cut
 
