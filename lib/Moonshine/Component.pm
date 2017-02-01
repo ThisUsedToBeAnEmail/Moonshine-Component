@@ -1,6 +1,5 @@
 package Moonshine::Component;
 
-use 5.006;
 use strict;
 use warnings;
 
@@ -8,7 +7,6 @@ use Moonshine::Element;
 use Moonshine::Magic;
 use Params::Validate qw(:all);
 use Ref::Util qw(:all);
-use BEGIN::Lift;
 use feature qw/switch/;
 no if $] >= 5.017011, warnings => 'experimental::smartmatch';
 
