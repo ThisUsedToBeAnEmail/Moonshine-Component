@@ -11,3 +11,6 @@ Revision history for Moonshine-Component
 
 0.04    01/02/2017
         Remove things that should not be there.
+
+0.05    05/02/2017
+        Fix Dependencies and MIN_PERL_VERSION.
