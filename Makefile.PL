@@ -18,13 +18,13 @@ WriteMakefile(
     BUILD_REQUIRES => {
         'Test::More' => 0,
         'Moonshine::Test' => 0.10,
-        'Moonshine::Util' => 0.03,
+        'Moonshine::Util' => 0.04,
         'Moonshine::Element' => 0.06,
-        'Moonshine::Magic' => 0.04,
+        'Moonshine::Magic' => 0.06,
     },
     PREREQ_PM => {
         'Moonshine::Element' => 0.06,
-        'Moonshine::Magic'   => 0.04,
+        'Moonshine::Magic'   => 0.06,
         'Params::Validate'   => 1.26,
         'Ref::Util'          => 0.113,
         'UNIVERSAL::Object'  => 0.04, 
